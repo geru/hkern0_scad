@@ -4,6 +4,10 @@ include <hrk_library/hswx.scad>
 
 $fn=90;
 
+module hsw_clip2() {
+  _hsw_clip2_strong();
+}
+
 plug_base_thickness = 1;
 plug_base_lip = 1;
 plug_stud_thickness = 1.6;
@@ -12,7 +16,7 @@ plug_spring_base = 3;
 plug_spring_depth = 6;
 plug_spring_thickness = 1.2;
 
-module _hsw_clip2() {
+module _hsw_clip2_strong() {
 points_clip = [
 [ -plug_base_lip,                             0, 0 ],
 [              0,                             0, 0.3 ],   // origin
@@ -46,12 +50,13 @@ points_clip = [
 [ plug_stud_thickness, 0, 0 ],
 [ 0, 0, 0 ],
 ];
-
-  linear_extrude(hswx_inside/2)
-    polygon( polyRound( points_clip ) );
+  rotate([-90,0,0])
+    linear_extrude(hswx_inside/2)
+      polygon( polyRound( points_clip ) );
 }
 
-module hsw_clip2( center=false, anchor=BOTTOM+LEFT, spin=0, orient=UP ) {
+
+module hsw_clip2_strong( center=false, anchor=BOTTOM+LEFT, spin=0, orient=UP ) {
 /*  anchor = get_anchor(anchor, center, -[1,1,1], -[1,1,1]);
   size = scalar_vec3(1);
   attachable(anchor,spin,orient, size=size) {
@@ -59,11 +64,12 @@ module hsw_clip2( center=false, anchor=BOTTOM+LEFT, spin=0, orient=UP ) {
     children();
   }
 */
-   rotate([-90,0,0])
-    _hsw_clip2();
+ // couldn't get anchoring and attachability working. leaving for now  
+    _hsw_clip2_strong();
 }
 
 /*
+hsw_clip2_strong();
 translate([-1,0,0])
 cube([22,10,3]);
 hsw_clip2();
