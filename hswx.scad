@@ -10,9 +10,8 @@ hswx_depth=8;                         // depth of grid
 hswx_lock_depth=5;                    // depth of locking section start
 
 hswx_lock_lip=1;                      // depth of lip = protrusion of lip = chamfer
-hswx_lock_chamfer=hswx_lock_lip;
+hswx_lock_chamfer=hswx_lock_lip;      // chamfer is 45deg, so defined = lock_lip
 
-hswx_id_large = (hswx_inside+hswx_lock_lip) * 2/sqrt(3); 
-hswx_id_small = hswx_inside * 2/sqrt(3); // outer diameter of circle containing inside hexagon
-
+hswx_id_large = (hswx_inside + 2*hswx_lock_lip) * 2/sqrt(3); // diameter of circle containing larg hexagon fitting locks and clips
+hswx_id_small = hswx_inside * 2/sqrt(3);                     // diameter of circle containing small hexagon fitting standard plugs
 
