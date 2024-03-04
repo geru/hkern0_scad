@@ -5,19 +5,22 @@ include <hkern0_scad/BOSL2_utils.scad>
 
 $fn=50;
 generate_clipconnector = false;
+generate_clip = false;
+generate_clip_rect_base = false;
+generate_clip_hex_base = false;
 
 // A double clip to hold two pieces of HSW together
 module hsw_clipconnector() {
   height=3;
   difference() {
-    union() {
+    union() { // two clips with base
       hsw_clip(center=true, rotate=180, type=0, rectbase=3);
       translate([HSWX_OUTSIDE,0,0])
         hsw_clip(center=true, rotate=0, type=0, rectbase=height);
-    }
+    } // carve out the stress-reliever between them to bend
     translate([HSWX_OUTSIDE/2,HSWX_INSIDE/2,height])
-    rotate([90,0,0])
-    cylinder(h=HSWX_INSIDE, d=height);
+      rotate([90,0,0])
+        cylinder(h=HSWX_INSIDE, d=height);
   }
 }
 
@@ -54,7 +57,7 @@ module hsw_clip(
   hexbase=0,    // put a hexbase on top and give it a height
   rectbase=0 )  // put a rectangular base on top and give it a height
 {
-polydef = [ [
+outline = [ [
 [ -plug_base_lip,                             0 ],
 [              0,                             0, 0.1 ],   // origin
 [              0,               HSWX_LOCK_DEPTH ],   // strong-side base
@@ -69,7 +72,7 @@ polydef = [ [
 [ HSWX_INSIDE-plug_stud_thickness,   HSWX_DEPTH ],
 
 [    HSWX_INSIDE,                    HSWX_DEPTH,   2.0 ],    // weak lock
-[ HSWX_INSIDE+HSWX_LOCK_LIP*.9, HSWX_LOCK_DEPTH+HSWX_LOCK_LIP, 0.5 ],
+[ HSWX_INSIDE+HSWX_LOCK_LIP, HSWX_LOCK_DEPTH+HSWX_LOCK_LIP, 0.5 ],
 [    HSWX_INSIDE,               HSWX_LOCK_DEPTH ],   // weak-side base
 [    HSWX_INSIDE,                           0.1,   0.1 ],
 [ HSWX_INSIDE+0.1,                            0 ],
@@ -93,7 +96,7 @@ polydef = [ [
       translate([-HSWX_INSIDE/2,-HSWX_INSIDE/4,0])
         rotate([-90,0,0])
           linear_extrude(HSWX_INSIDE/2)
-            polygon( round_corners(path=points(polydef[type]), radius=rads(polydef[type]), $fn=90) );
+            polygon( round_corners(path=points(outline[type]), radius=rads(outline[type]), $fn=90) );
       if( hexbase ) {
         cyl(l=hexbase, d=hswx_od-1, $fn=6, anchor=BOTTOM, spin=30, rounding2=hexbase/2);
       }
@@ -106,4 +109,8 @@ polydef = [ [
 
 // hsw_clip(center=true, rotate=0); //, type=0, hexbase=3);
 if( generate_clipconnector )
-  hsw_clipconnector();
+  rotate([90,0,0])
+    hsw_clipconnector();
+
+if( generate_clip )
+  hsw_clip(center=true, rectbase=generate_clip_rect_base?3:0, hexbase=generate_clip_hex_base?3:0);
