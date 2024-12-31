@@ -7,6 +7,10 @@ function points(radpath) =
 function rads(radpath) = 
     [for (i = [0 : len(radpath) - 1]) (len(radpath[i])<=2)? 0 : radpath[i][2]  ];
 
+module rounded_polygon(outline) {
+    polygon( round_corners( path=points( outline ), radius=rads( outline ) ) );
+}
+
 /*
 // Example: Define outline as points with radii
 outline = [ 
